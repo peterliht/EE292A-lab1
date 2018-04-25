@@ -20,7 +20,7 @@ cl_kernel kernel;
 cl_program program;
 
 cl_uchar *input_images = NULL, *output_guesses = NULL, *reference_guesses = NULL;
-cl_short *input_weights = NULL;   // original code: cl_float *input_weights = NULL; 
+cl_float *input_weights = NULL;   // original code: cl_float *input_weights = NULL; 
 cl_mem input_images_buffer, input_weights_buffer, output_guesses_buffer;
 
 // Global variables.
