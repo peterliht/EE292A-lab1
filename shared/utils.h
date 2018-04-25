@@ -2,7 +2,10 @@
 #define __UTILS_H_
 
 void write_weights_file(char *filename, float *weights, int num_weights);
-bool read_weights_file(char *filename, char *weights);  //original: float *weights
+
+bool read_weights_file(char *filename, int *weights);  //original: float *weights
+// bool read_weights_file(char *filename, char *weights);  //original: float *weights
+
 unsigned int convert_endian_4bytes(unsigned int input);
 int parse_MNIST_images(const char* file, unsigned char** X);
 int parse_MNIST_labels(const char* file, unsigned char** y);
