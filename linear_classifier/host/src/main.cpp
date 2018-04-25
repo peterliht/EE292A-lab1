@@ -67,6 +67,7 @@ int main(int argc, char **argv) {
 		use_fixed_point = true; 
 	} else {
 		use_fixed_point = false;
+		printf("Defaulting to use_fixed_point=false");
 	}
 	
 	if(options.has("single_workitem")) {
