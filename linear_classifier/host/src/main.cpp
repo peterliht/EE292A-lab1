@@ -160,7 +160,7 @@ void classify() {
     
     // input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //32b
     // input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(short) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //16b
-    input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(char) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //8b
+    input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(signed char) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //8b
 
     checkError(status, "Error: could not create input image buffer");
     output_guesses_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(unsigned char) * n_items, NULL, &status);
@@ -173,7 +173,7 @@ void classify() {
 
     // status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(int) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);  //32b
     // status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(short) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL); //16b
-    status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(char) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);  //8b
+    status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(signed char) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);  //8b
 
     checkError(status, "Error: could not copy data into device");
     
