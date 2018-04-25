@@ -28,7 +28,7 @@ void write_weights_file(char *filename, float *weights, int num_weights) {
 }
 
 // TODO: You may need to modify this file to read in files with differently sized weights.
-bool read_weights_file(char *filename, short *weights) {
+bool read_weights_file(char *filename, float *weights) {
 	FILE *f = fopen(filename, "rb");
 	if (f == NULL){
 		printf("ERROR: could not open %s\n",filename);
