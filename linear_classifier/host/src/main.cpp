@@ -20,7 +20,10 @@ cl_kernel kernel;
 cl_program program;
 
 cl_uchar *input_images = NULL, *output_guesses = NULL, *reference_guesses = NULL;
-cl_short *input_weights = NULL;   // original code: cl_float *input_weights = NULL; 
+// cl_short *input_weights = NULL;   // original code: cl_float *input_weights = NULL; 
+cl_char *input_weights = NULL; //8b
+
+
 cl_mem input_images_buffer, input_weights_buffer, output_guesses_buffer;
 
 // Global variables.
@@ -29,7 +32,7 @@ std::string labelsFilename;
 std::string aocxFilename;
 std::string deviceInfo;
 unsigned int n_items;
-bool use_fixed_point;
+bool use_fixed_point = true;  // lab 1 default: use fixed point
 bool use_single_workitem;
 
 // Function prototypes.
@@ -63,11 +66,12 @@ int main(int argc, char **argv) {
         printf("Defaulting to labels file \"%s\"\n", labelsFilename.c_str());
     }
     
-    if(options.has("fixed_point")) {
-        use_fixed_point = true; 
-    } else {
-        use_fixed_point = false;
-    }
+    // default is true for lab 1
+    // if(options.has("fixed_point")) {
+    //     use_fixed_point = true; 
+    // } else {
+    //     use_fixed_point = false;
+    // }
     
     if(options.has("single_workitem")) {
         use_single_workitem = true; 
@@ -97,14 +101,17 @@ int main(int argc, char **argv) {
     // Initializing OpenCL and the kernels.
     // TODO: Make sure you allocate the right size buffer for your weights
     output_guesses = (cl_uchar*)alignedMalloc(sizeof(cl_uchar) * n_items);
-    input_weights = (cl_short*)alignedMalloc(sizeof(cl_short) * FEATURE_COUNT * NUM_DIGITS);
-    
+    // input_weights = (cl_short*)alignedMalloc(sizeof(cl_short) * FEATURE_COUNT * NUM_DIGITS);
+    input_weights = (cl_char*)alignedMalloc(sizeof(cl_char) * FEATURE_COUNT * NUM_DIGITS);
+
+
     // Read in the weights from the weights files
     // TODO: Make sure you read from the right file.
     for (unsigned i = 0; i < NUM_DIGITS; i++){
         char weights_file[256];
         if (use_fixed_point)
-            snprintf(weights_file, 256, "weights_fxp16/weights_%d_fxp16", i);
+            snprintf(weights_file, 256, "weights_fxp8/weights_%d_fxp8", i);
+            // snprintf(weights_file, 256, "weights_fxp16/weights_%d_fxp16", i);
         else
             snprintf(weights_file, 256, "weights_fp/weights_%d", i);
         if (!read_weights_file(weights_file, input_weights+FEATURE_COUNT*i)){
@@ -145,7 +152,10 @@ void classify() {
     // TODO: Make sure you create the right size buffer
     input_images_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(unsigned char) * FEATURE_COUNT * n_items, NULL, &status);
     checkError(status, "Error: could not create input image buffer");
-    input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(short) * FEATURE_COUNT * NUM_DIGITS, NULL, &status);
+    
+    // input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(short) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //16b
+    input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(char) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //8b
+
     checkError(status, "Error: could not create input image buffer");
     output_guesses_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(unsigned char) * n_items, NULL, &status);
     checkError(status, "Error: could not create output guesses buffer");
@@ -154,7 +164,10 @@ void classify() {
     // TODO: Make sure you pass the right input weights (and the right size)
     status = clEnqueueWriteBuffer(queue, input_images_buffer, CL_TRUE, 0, sizeof(unsigned char) * FEATURE_COUNT * n_items, input_images, 0, NULL, NULL);
     checkError(status, "Error: could not copy data into device");
-    status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(short) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);
+
+    // status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(short) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL); //16b
+    status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(char) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);  //8b
+
     checkError(status, "Error: could not copy data into device");
     
     // Set the arguments for data_in, data_out and sobel kernels.
