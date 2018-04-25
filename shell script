@@ -1,9 +1,12 @@
 source /usr/local/intelFPGA/17.1/hld/init_opencl.sh
 
-export​ AOCL_BOARD_PACKAGE_ROOT=/usr/local/intelFPGA/17.1/hld/board/a10_ref
+
+export AOCL_BOARD_PACKAGE_ROOT=/usr/local/intelFPGA/17.1/hld/board/a10_ref
 
 
 aoc -march=emulator -v -board-package=$INTELFPGAOCLSDKROOT/board/s5_ref linear_classifier_fp.cl -o linear_classifier_fp_emu.aocx
+
+export CL_CONTEXT_EMULATOR_DEVICE_ALTERA=1
 
 
 

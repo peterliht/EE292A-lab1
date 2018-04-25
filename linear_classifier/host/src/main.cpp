@@ -21,9 +21,9 @@ cl_program program;
 
 cl_uchar *input_images = NULL, *output_guesses = NULL, *reference_guesses = NULL;
 
-cl_int *input_weights = NULL; // 32b
+// cl_int *input_weights = NULL; // 32b
 // cl_short *input_weights = NULL;   // original code: cl_float *input_weights = NULL; 
-// cl_char *input_weights = NULL; //8b
+cl_char *input_weights = NULL; //8b
 
 
 cl_mem input_images_buffer, input_weights_buffer, output_guesses_buffer;
@@ -104,9 +104,9 @@ int main(int argc, char **argv) {
     // TODO: Make sure you allocate the right size buffer for your weights
     output_guesses = (cl_uchar*)alignedMalloc(sizeof(cl_uchar) * n_items);
 
-    input_weights = (cl_int*)alignedMalloc(sizeof(cl_int) * FEATURE_COUNT * NUM_DIGITS);
+    // input_weights = (cl_int*)alignedMalloc(sizeof(cl_int) * FEATURE_COUNT * NUM_DIGITS);
     // input_weights = (cl_short*)alignedMalloc(sizeof(cl_short) * FEATURE_COUNT * NUM_DIGITS);
-    // input_weights = (cl_char*)alignedMalloc(sizeof(cl_char) * FEATURE_COUNT * NUM_DIGITS);
+    input_weights = (cl_char*)alignedMalloc(sizeof(cl_char) * FEATURE_COUNT * NUM_DIGITS);
 
 
     // Read in the weights from the weights files
@@ -114,8 +114,8 @@ int main(int argc, char **argv) {
     for (unsigned i = 0; i < NUM_DIGITS; i++){
         char weights_file[256];
         if (use_fixed_point)
-            snprintf(weights_file, 256, "weights_fxp32/weights_%d_fxp32", i);
-            // snprintf(weights_file, 256, "weights_fxp8/weights_%d_fxp8", i);
+            // snprintf(weights_file, 256, "weights_fxp32/weights_%d_fxp32", i);
+            snprintf(weights_file, 256, "weights_fxp8/weights_%d_fxp8", i);
             // snprintf(weights_file, 256, "weights_fxp16/weights_%d_fxp16", i);
         else
             snprintf(weights_file, 256, "weights_fp/weights_%d", i);
@@ -158,9 +158,9 @@ void classify() {
     input_images_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(unsigned char) * FEATURE_COUNT * n_items, NULL, &status);
     checkError(status, "Error: could not create input image buffer");
     
-    input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //8b
+    // input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(int) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //32b
     // input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(short) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //16b
-    // input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(char) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //8b
+    input_weights_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(char) * FEATURE_COUNT * NUM_DIGITS, NULL, &status); //8b
 
     checkError(status, "Error: could not create input image buffer");
     output_guesses_buffer = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(unsigned char) * n_items, NULL, &status);
@@ -171,9 +171,9 @@ void classify() {
     status = clEnqueueWriteBuffer(queue, input_images_buffer, CL_TRUE, 0, sizeof(unsigned char) * FEATURE_COUNT * n_items, input_images, 0, NULL, NULL);
     checkError(status, "Error: could not copy data into device");
 
-    status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(int) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);  //32b
+    // status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(int) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);  //32b
     // status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(short) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL); //16b
-    // status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(char) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);  //8b
+    status = clEnqueueWriteBuffer(queue, input_weights_buffer, CL_TRUE, 0, sizeof(char) * FEATURE_COUNT * NUM_DIGITS, input_weights, 0, NULL, NULL);  //8b
 
     checkError(status, "Error: could not copy data into device");
     
