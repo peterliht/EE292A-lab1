@@ -30,13 +30,13 @@ void write_weights_file(char *filename, float *weights, int num_weights) {
 
 // TODO: You may need to modify this file to read in files with differently sized weights.
 // 16b, 8b, 4b: short, char, new_defined
-bool read_weights_file(char *filename, int4_t weights) {
+bool read_weights_file(char *filename, ap_int<4> int4_t weights) {
 	FILE *f = fopen(filename, "rb");
 	if (f == NULL){
 		printf("ERROR: could not open %s\n",filename);
 		return false;
 	}
-	int read_elements = fread(weights, sizeof(int4_t), FEATURE_COUNT, f);
+	int read_elements = fread(weights, sizeof(ap_int<4> int4_t), FEATURE_COUNT, f);
 	fclose(f);
 	
 	if (read_elements != FEATURE_COUNT){
