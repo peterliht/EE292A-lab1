@@ -9,7 +9,6 @@
 #include "../../shared/defines.h"
 #include "../../shared/utils.h"
 
-#include "ihc_apint.h"
 
 using namespace aocl_utils;
 

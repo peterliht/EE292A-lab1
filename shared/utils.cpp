@@ -8,7 +8,6 @@
 #include "CL/opencl.h"
 #include "AOCLUtils/aocl_utils.h"
 
-#include "ihc_apint.h"
 
 using namespace aocl_utils;
 
