@@ -12,3 +12,9 @@ export CL_CONTEXT_EMULATOR_DEVICE_ALTERA=1
 
 export AOCL_BOARD_PACKAGE_ROOT=$INTELFPGAOCLSDKROOT/board/c5soc
 source $INTELFPGAOCLSDKROOT/init_opencl.sh
+
+
+
+
+
+#pragma OPENCL EXTENSION cl_intel_arbitrary_precision_integers : enable

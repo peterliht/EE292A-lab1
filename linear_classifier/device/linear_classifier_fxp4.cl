@@ -6,7 +6,7 @@
 // weights is a 28x28x10 array, holding the weights for each digit, 0 - 9
 __attribute__((reqd_work_group_size(10000,1,1)))
 __kernel void linear_classifier(global const unsigned char * restrict images, 
-                                constant int4_t * restrict weights,
+                                constant int4_t restrict weights,   //cannot use pointer here for int4_t type
                                 global unsigned char * restrict guesses)
 {
     int image_array_index = get_global_id(0)*ARRAY_DIM; 

@@ -8,6 +8,8 @@
 #include "CL/opencl.h"
 #include "AOCLUtils/aocl_utils.h"
 
+#include "ihc_apint.h"
+
 using namespace aocl_utils;
 
 unsigned int convert_endian_4bytes(unsigned int input){
@@ -29,13 +31,13 @@ void write_weights_file(char *filename, float *weights, int num_weights) {
 
 // TODO: You may need to modify this file to read in files with differently sized weights.
 // 16b, 8b, 4b: short, char, new_defined
-bool read_weights_file(char *filename, signed char *weights) {
+bool read_weights_file(char *filename, int4_t weights) {
 	FILE *f = fopen(filename, "rb");
 	if (f == NULL){
 		printf("ERROR: could not open %s\n",filename);
 		return false;
 	}
-	int read_elements = fread(weights, sizeof(signed char), FEATURE_COUNT, f);
+	int read_elements = fread(weights, sizeof(int4_t), FEATURE_COUNT, f);
 	fclose(f);
 	
 	if (read_elements != FEATURE_COUNT){
