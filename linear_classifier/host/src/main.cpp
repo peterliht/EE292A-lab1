@@ -25,7 +25,7 @@ cl_uchar *input_images = NULL, *output_guesses = NULL, *reference_guesses = NULL
 // cl_int *input_weights = NULL; // 32b
 // cl_short *input_weights = NULL;   // original code: cl_float *input_weights = NULL; 
 // cl_char *input_weights = NULL; //8b
-ap_int<4> ap_int<4> int4_t input_weights = NULL; //4b
+ap_int<4> int4_t input_weights = NULL; //4b
 
 
 cl_mem input_images_buffer, input_weights_buffer, output_guesses_buffer;
